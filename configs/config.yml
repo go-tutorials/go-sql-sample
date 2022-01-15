@@ -1,0 +1,33 @@
+server:
+  name: go-sql-rest-api
+  port: 8080
+
+sql:
+  driver: postgres
+  data_source_name: user=postgres password=bbc148562 dbname=public sslmode=disable
+
+log:
+  level: info
+  map:
+    time: "@timestamp"
+    msg: message
+
+middleware:
+  log: true
+  skips: /health
+  request: request
+  size: size
+
+status:
+  not_found: 0
+  duplicate_key: 0
+  success: 1
+  version_error: 2
+  validation_error: 4
+  error: 4
+
+action:
+  create: create
+  update: update
+  patch: patch
+  delete: delete
