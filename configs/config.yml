@@ -3,8 +3,8 @@ server:
   port: 8080
 
 sql:
-  driver: postgres
-  data_source_name: user=postgres password=bbc148562 dbname=public sslmode=disable
+  driver: mysql
+  data_source_name: root:abcd1234@/masterdata?charset=utf8&parseTime=True&loc=Local
 
 log:
   level: info

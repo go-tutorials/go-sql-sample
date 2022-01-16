@@ -24,11 +24,7 @@ type userService struct {
 }
 
 func (s *userService) Load(ctx context.Context, id string) (*User, error) {
-	res, err := s.repository.Load(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return res, err
+	return s.repository.Load(ctx, id)
 }
 func (s *userService) Create(ctx context.Context, user *User) (int64, error) {
 	return s.repository.Create(ctx, user)
