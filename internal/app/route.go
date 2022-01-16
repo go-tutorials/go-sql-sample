@@ -14,14 +14,14 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 
 	r.HandleFunc("/health", app.Health.Check).Methods(GET)
 
-	userPath := "/users"
-	r.HandleFunc(userPath, app.User.Search).Methods(GET)
-	r.HandleFunc(userPath+"/search", app.User.Search).Methods(GET, POST)
-	r.HandleFunc(userPath+"/{id}", app.User.Load).Methods(GET)
-	r.HandleFunc(userPath, app.User.Create).Methods(POST)
-	r.HandleFunc(userPath+"/{id}", app.User.Update).Methods(PUT)
-	r.HandleFunc(userPath+"/{id}", app.User.Patch).Methods(PATCH)
-	r.HandleFunc(userPath+"/{id}", app.User.Delete).Methods(DELETE)
+	user := "/users"
+	r.HandleFunc(user, app.User.Search).Methods(GET)
+	r.HandleFunc(user+"/search", app.User.Search).Methods(GET, POST)
+	r.HandleFunc(user+"/{id}", app.User.Load).Methods(GET)
+	r.HandleFunc(user, app.User.Create).Methods(POST)
+	r.HandleFunc(user+"/{id}", app.User.Update).Methods(PUT)
+	r.HandleFunc(user+"/{id}", app.User.Patch).Methods(PATCH)
+	r.HandleFunc(user+"/{id}", app.User.Delete).Methods(DELETE)
 
 	return nil
 }
