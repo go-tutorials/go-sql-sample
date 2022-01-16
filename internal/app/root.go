@@ -5,13 +5,16 @@ import (
 	mid "github.com/core-go/log/middleware"
 	sv "github.com/core-go/service"
 	"github.com/core-go/sql"
+
+	"go-service/pkg/client"
 )
 
 type Root struct {
-	Server     sv.ServerConf    `mapstructure:"server"`
-	Sql        sql.Config       `mapstructure:"sql"`
-	Log        log.Config       `mapstructure:"log"`
-	MiddleWare mid.LogConfig    `mapstructure:"middleware"`
-	Status     *sv.StatusConfig `mapstructure:"status"`
-	Action     *sv.ActionConfig `mapstructure:"action"`
+	Server     sv.ServerConf       `mapstructure:"server"`
+	Sql        sql.Config          `mapstructure:"sql"`
+	Client     client.ClientConfig `mapstructure:"client"`
+	Log        log.Config          `mapstructure:"log"`
+	MiddleWare mid.LogConfig       `mapstructure:"middleware"`
+	Status     *sv.StatusConfig    `mapstructure:"status"`
+	Action     *sv.ActionConfig    `mapstructure:"action"`
 }

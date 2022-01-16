@@ -11,9 +11,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"reflect"
 
+	. "go-service/internal/client"
 	. "go-service/internal/handler"
 	. "go-service/internal/model"
-	. "go-service/internal/repository"
 	. "go-service/internal/usecase/user"
 )
 
@@ -22,14 +22,14 @@ type ApplicationContext struct {
 	UserHandler   UserHandler
 }
 
-func NewApp(ctx context.Context, root Root) (*ApplicationContext, error) {
-	db, err := q.OpenByConfig(root.Sql)
+func NewApp(ctx context.Context, conf Root) (*ApplicationContext, error) {
+	db, err := q.OpenByConfig(conf.Sql)
 	if err != nil {
 		return nil, err
 	}
 	logError := log.ErrorMsg
-	status := sv.InitializeStatus(root.Status)
-	action := sv.InitializeAction(root.Action)
+	status := sv.InitializeStatus(conf.Status)
+	action := sv.InitializeAction(conf.Action)
 	validator := v.NewValidator()
 
 	userType := reflect.TypeOf(User{})
@@ -39,7 +39,7 @@ func NewApp(ctx context.Context, root Root) (*ApplicationContext, error) {
 		return nil, err
 	}
 
-	userRepository := NewUserRepository(db)
+	userRepository, err := NewUserClient(conf.Client, log.InfoFields) // userRepository := NewUserRepository(db)
 	userService := NewUserService(userRepository)
 	userHandler := NewUserHandler(userSearchBuilder.Search, userService, status, logError, validator.Validate, &action)
 

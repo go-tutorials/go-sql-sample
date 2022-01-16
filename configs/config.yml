@@ -1,6 +1,6 @@
 server:
   name: go-sql-rest-api
-  port: 8080
+  port: 8082
 
 sql:
   driver: mysql
@@ -17,6 +17,17 @@ middleware:
   skips: /health
   request: request
   size: size
+
+client:
+  endpoint:
+    url: "http://localhost:8080/users"
+    timeout: 1s
+  log:
+    log: true
+    size: size
+    status: status
+    request: request
+    response: response
 
 status:
   not_found: 0
