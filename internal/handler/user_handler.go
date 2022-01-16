@@ -11,7 +11,7 @@ import (
 
 	. "go-service/internal/filter"
 	. "go-service/internal/model"
-	. "go-service/internal/usecase/user"
+	. "go-service/internal/service"
 )
 
 type UserHandler interface {
