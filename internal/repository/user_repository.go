@@ -26,22 +26,18 @@ type userRepository struct {
 }
 
 func (r *userRepository) Load(ctx context.Context, id string) (*User, error) {
-	query := "select id, username, email, phone, date_of_birth from users"
-	rows, err := r.DB.QueryContext(ctx, query)
+	query := "select id, username, email, phone, date_of_birth from users where id = ?"
+	rows, err := r.DB.QueryContext(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}
-	var result []User
+	defer rows.Close()
 	for rows.Next() {
 		var user User
 		err = rows.Scan(&user.Id, &user.Username, &user.Phone, &user.Email, &user.DateOfBirth)
-		result = append(result, user)
+		return &user, nil
 	}
-	if len(result) > 0 {
-		return &result[0], nil
-	} else {
-		return nil, nil
-	}
+	return nil, nil
 }
 
 func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) {

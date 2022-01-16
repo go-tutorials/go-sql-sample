@@ -11,9 +11,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"reflect"
 
-	. "go-service/internal/client"
 	. "go-service/internal/handler"
 	. "go-service/internal/model"
+	. "go-service/internal/repository"
 	. "go-service/internal/usecase/user"
 )
 
@@ -39,7 +39,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
-	userRepository, err := NewUserClient(conf.Client, log.InfoFields) // userRepository := NewUserRepository(db)
+	userRepository := NewUserRepository(db) // userRepository, err := NewUserClient(conf.Client, log.InfoFields)
 	userService := NewUserService(userRepository)
 	userHandler := NewUserHandler(userSearchBuilder.Search, userService, status, logError, validator.Validate, &action)
 
