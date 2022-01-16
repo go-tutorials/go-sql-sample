@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"go-service/internal/model"
+	. "go-service/internal/model"
 	"go-service/pkg/client"
 )
 
@@ -35,27 +35,27 @@ func NewUserClient(config client.ClientConfig, log func(context.Context, string,
 	return &UserClient{Client: c, Url: config.Endpoint.Url, Config: conf, Log: log}, nil
 }
 
-func (c *UserClient) Load(ctx context.Context, id string) (*model.User, error) {
+func (c *UserClient) Load(ctx context.Context, id string) (*User, error) {
 	url := c.Url + "/" + id
-	var user model.User
+	var user User
 	err := client.Get(ctx, c.Client, url, &user, c.Config, c.Log)
 	return &user, err
 }
 
-func (c *UserClient) Create(ctx context.Context, user *model.User) (int64, error) {
+func (c *UserClient) Create(ctx context.Context, user *User) (int64, error) {
 	var res ResultInfo
 	err := client.Post(ctx, c.Client, c.Url, user, &res, c.Config, c.Log)
 	return res.Status, err
 }
 
-func (c *UserClient) Update(ctx context.Context, user *model.User, id string) (int64, error) {
-	url := c.Url + "/" + id
+func (c *UserClient) Update(ctx context.Context, user *User) (int64, error) {
+	url := c.Url + "/" + user.Id
 	var res ResultInfo
 	err := client.Put(ctx, c.Client, url, user, &res, c.Config, c.Log)
 	return res.Status, err
 }
 
-func (c *UserClient) Patch(ctx context.Context, user map[string]interface{}, id string) (int64, error) {
+func (c *UserClient) Patch(ctx context.Context, id string, user map[string]interface{}) (int64, error) {
 	url := c.Url + "/" + id
 	var res ResultInfo
 	err := client.Patch(ctx, c.Client, url, user, &res, c.Config, c.Log)

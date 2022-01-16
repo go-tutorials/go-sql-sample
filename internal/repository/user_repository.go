@@ -12,8 +12,8 @@ import (
 type UserRepository interface {
 	Load(ctx context.Context, id string) (*User, error)
 	Create(ctx context.Context, user *User) (int64, error)
-	Update(ctx context.Context, user *User, id string) (int64, error)
-	Patch(ctx context.Context, user map[string]interface{}, id string) (int64, error)
+	Update(ctx context.Context, user *User) (int64, error)
+	Patch(ctx context.Context, id string, user map[string]interface{}) (int64, error)
 	Delete(ctx context.Context, id string) (int64, error)
 }
 
@@ -57,7 +57,7 @@ func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) 
 	return result.RowsAffected()
 }
 
-func (r *userRepository) Update(ctx context.Context, user *User, id string) (int64, error) {
+func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) {
 	query := "update users set username = ?, email = ?, phone = ?, date_of_birth = ? where id = ?"
 	stmt, er0 := r.DB.Prepare(query)
 	if er0 != nil {
@@ -70,21 +70,21 @@ func (r *userRepository) Update(ctx context.Context, user *User, id string) (int
 	return result.RowsAffected()
 }
 
-func (r *userRepository) Patch(ctx context.Context, user map[string]interface{}, id string) (int64, error) {
+func (r *userRepository) Patch(ctx context.Context, id string, user map[string]interface{}) (int64, error) {
 	updateClause := "update users set"
-	whereClause := fmt.Sprintf("where id='%r'", id)
+	whereClause := fmt.Sprintf("where id='%s'", id)
 
 	setClause := make([]string, 0)
 	if user["username"] != nil {
-		msg := fmt.Sprintf("username='%r'", fmt.Sprint(user["username"]))
+		msg := fmt.Sprintf("username='%s'", fmt.Sprint(user["username"]))
 		setClause = append(setClause, msg)
 	}
 	if user["email"] != nil {
-		msg := fmt.Sprintf("email='%r'", fmt.Sprint(user["email"]))
+		msg := fmt.Sprintf("email='%s'", fmt.Sprint(user["email"]))
 		setClause = append(setClause, msg)
 	}
 	if user["phone"] != nil {
-		msg := fmt.Sprintf("phone='%r'", fmt.Sprint(user["phone"]))
+		msg := fmt.Sprintf("phone='%s'", fmt.Sprint(user["phone"]))
 		setClause = append(setClause, msg)
 	}
 

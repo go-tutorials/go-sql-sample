@@ -6,22 +6,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Route(r *mux.Router, ctx context.Context, root Root) error {
-	app, err := NewApp(ctx, root)
+func Route(r *mux.Router, ctx context.Context, conf Config) error {
+	app, err := NewApp(ctx, conf)
 	if err != nil {
 		return err
 	}
 
-	r.HandleFunc("/health", app.HealthHandler.Check).Methods(GET)
+	r.HandleFunc("/health", app.Health.Check).Methods(GET)
 
 	userPath := "/users"
-	r.HandleFunc(userPath, app.UserHandler.Search).Methods(GET)
-	r.HandleFunc(userPath+"/search", app.UserHandler.Search).Methods(GET, POST)
-	r.HandleFunc(userPath+"/{id}", app.UserHandler.Load).Methods(GET)
-	r.HandleFunc(userPath, app.UserHandler.Create).Methods(POST)
-	r.HandleFunc(userPath+"/{id}", app.UserHandler.Update).Methods(PUT)
-	r.HandleFunc(userPath+"/{id}", app.UserHandler.Patch).Methods(PATCH)
-	r.HandleFunc(userPath+"/{id}", app.UserHandler.Delete).Methods(DELETE)
+	r.HandleFunc(userPath, app.User.Search).Methods(GET)
+	r.HandleFunc(userPath+"/search", app.User.Search).Methods(GET, POST)
+	r.HandleFunc(userPath+"/{id}", app.User.Load).Methods(GET)
+	r.HandleFunc(userPath, app.User.Create).Methods(POST)
+	r.HandleFunc(userPath+"/{id}", app.User.Update).Methods(PUT)
+	r.HandleFunc(userPath+"/{id}", app.User.Patch).Methods(PATCH)
+	r.HandleFunc(userPath+"/{id}", app.User.Delete).Methods(DELETE)
 
 	return nil
 }

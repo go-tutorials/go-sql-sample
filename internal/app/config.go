@@ -9,7 +9,7 @@ import (
 	"go-service/pkg/client"
 )
 
-type Root struct {
+type Config struct {
 	Server     sv.ServerConf       `mapstructure:"server"`
 	Sql        sql.Config          `mapstructure:"sql"`
 	Client     client.ClientConfig `mapstructure:"client"`
