@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/core-go/health"
 	"github.com/core-go/log"
+	"github.com/core-go/search/query"
 	sv "github.com/core-go/service"
 	v "github.com/core-go/service/v10"
 	q "github.com/core-go/sql"
-	"github.com/core-go/sql/query"
 	_ "github.com/go-sql-driver/mysql"
 	"reflect"
 
