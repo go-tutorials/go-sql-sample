@@ -16,6 +16,7 @@ middleware:
   log: true
   skips: /health
   request: request
+  response: response
   size: size
 
 client:

@@ -95,13 +95,12 @@ func (h *userHandler) Update(w http.ResponseWriter, r *http.Request) {
 	JSON(w, res)
 }
 func (h *userHandler) Patch(w http.ResponseWriter, r *http.Request) {
-	id := sv.GetRequiredParam(w, r)
 	var user User
 	r, json, er1 := sv.BuildMapAndCheckId(w, r, &user, h.Keys, h.Indexes)
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &user)
 		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Patch) {
-			res, er3 := h.service.Patch(r.Context(), id, json)
+			res, er3 := h.service.Patch(r.Context(), json)
 			sv.HandleResult(w, r, json, res, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Patch)
 		}
 	}
