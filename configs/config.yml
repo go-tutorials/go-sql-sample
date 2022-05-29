@@ -1,6 +1,6 @@
 server:
-  name: go-sql-rest-api
-  port: 8082
+  name: go-sql-layer-architecture-sample
+  port: 8080
 
 sql:
   driver: mysql
@@ -29,17 +29,3 @@ client:
     status: status
     request: request
     response: response
-
-status:
-  not_found: 0
-  duplicate_key: 0
-  success: 1
-  version_error: 2
-  validation_error: 4
-  error: 4
-
-action:
-  create: create
-  update: update
-  patch: patch
-  delete: delete

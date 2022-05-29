@@ -15,6 +15,4 @@ type Config struct {
 	Client     client.ClientConfig `mapstructure:"client"`
 	Log        log.Config          `mapstructure:"log"`
 	MiddleWare mid.LogConfig       `mapstructure:"middleware"`
-	Status     *sv.StatusConfig    `mapstructure:"status"`
-	Action     *sv.ActionConfig    `mapstructure:"action"`
 }

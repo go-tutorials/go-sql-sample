@@ -46,11 +46,11 @@ func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) 
 	if er0 != nil {
 		return -1, nil
 	}
-	result, er1 := stmt.ExecContext(ctx, user.Id, user.Username, user.Email, user.Phone, user.DateOfBirth)
+	res, er1 := stmt.ExecContext(ctx, user.Id, user.Username, user.Email, user.Phone, user.DateOfBirth)
 	if er1 != nil {
 		return -1, nil
 	}
-	return result.RowsAffected()
+	return res.RowsAffected()
 }
 
 func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) {
@@ -59,11 +59,11 @@ func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) 
 	if er0 != nil {
 		return -1, nil
 	}
-	result, er1 := stmt.ExecContext(ctx, user.Username, user.Email, user.Phone, user.DateOfBirth, user.Id)
+	res, er1 := stmt.ExecContext(ctx, user.Username, user.Email, user.Phone, user.DateOfBirth, user.Id)
 	if er1 != nil {
 		return -1, er1
 	}
-	return result.RowsAffected()
+	return res.RowsAffected()
 }
 
 func (r *userRepository) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
@@ -88,12 +88,11 @@ func (r *userRepository) Patch(ctx context.Context, user map[string]interface{})
 	querySlice := []string{updateClause, setClauseRes, whereClause}
 	query := strings.Join(querySlice, " ")
 
-	result, err := r.DB.ExecContext(ctx, query)
+	res, err := r.DB.ExecContext(ctx, query)
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
-
-	return result.RowsAffected()
+	return res.RowsAffected()
 }
 
 func (r *userRepository) Delete(ctx context.Context, id string) (int64, error) {
@@ -102,13 +101,9 @@ func (r *userRepository) Delete(ctx context.Context, id string) (int64, error) {
 	if er0 != nil {
 		return -1, nil
 	}
-	result, er1 := stmt.ExecContext(ctx, id)
+	res, er1 := stmt.ExecContext(ctx, id)
 	if er1 != nil {
 		return -1, er1
 	}
-	rowAffect, er2 := result.RowsAffected()
-	if er2 != nil {
-		return 0, er2
-	}
-	return rowAffect, nil
+	return res.RowsAffected()
 }
