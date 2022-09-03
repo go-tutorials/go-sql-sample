@@ -66,7 +66,7 @@ In this sample, search users with these criteria:
 - GET: retrieve a representation of the resource
 - POST: create a new resource
 - PUT: update the resource
-- PATCH: perform a partial update of a resource, refer to [service](https://github.com/core-go/service) and [mongo](https://github.com/core-go/mongo)  
+- PATCH: perform a partial update of a resource, refer to [core](https://github.com/core-go/core) and [mongo](https://github.com/core-go/mongo)  
 - DELETE: delete a resource
 
 ## API design for health check
@@ -189,16 +189,16 @@ We must solve 2 problems:
 2. At repository layer, from json format, we must convert the json format to database format (in this case, we must convert to bson of Mongo)
 
 #### Solutions for patch  
-At http handler layer, we use [core-go/service](https://github.com/core-go/service), to convert the user struct to map, to make sure we just update the fields we need to update
+At http handler layer, we use [core-go/core](https://github.com/core-go/core), to convert the user struct to map, to make sure we just update the fields we need to update
 ```go
-import server "github.com/core-go/service"
+import "github.com/core-go/core"
 
 func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
     var user User
     userType := reflect.TypeOf(user)
-    _, jsonMap := sv.BuildMapField(userType)
-    body, _ := sv.BuildMapAndStruct(r, &user)
-    json, er1 := sv.BodyToJson(r, user, body, ids, jsonMap, nil)
+    _, jsonMap := core.BuildMapField(userType)
+    body, _ := core.BuildMapAndStruct(r, &user)
+    json, er1 := core.BodyToJson(r, user, body, ids, jsonMap, nil)
 
     result, er2 := h.service.Patch(r.Context(), json)
     if er2 != nil {
