@@ -138,13 +138,13 @@ func (r *userRepository) Patch(ctx context.Context, user map[string]interface{})
 
 func (r *userRepository) Delete(ctx context.Context, id string) (int64, error) {
 	query := "delete from users where id = $1"
-	stmt, er0 := r.DB.Prepare(query)
-	if er0 != nil {
+	stmt, err := r.DB.Prepare(query)
+	if err != nil {
 		return -1, nil
 	}
-	res, er1 := stmt.ExecContext(ctx, id)
-	if er1 != nil {
-		return -1, er1
+	res, err := stmt.ExecContext(ctx, id)
+	if err != nil {
+		return -1, err
 	}
 	return res.RowsAffected()
 }
