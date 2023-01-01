@@ -66,13 +66,18 @@ func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) 
 			$3, 
 			$4,
 			$5)`
-	stmt, er0 := r.DB.Prepare(query)
-	if er0 != nil {
+	stmt, err := r.DB.Prepare(query)
+	if err != nil {
 		return -1, nil
 	}
-	res, er1 := stmt.ExecContext(ctx, user.Id, user.Username, user.Email, user.Phone, user.DateOfBirth)
-	if er1 != nil {
-		return -1, nil
+	res, err := stmt.ExecContext(ctx,
+		user.Id,
+		user.Username,
+		user.Email,
+		user.Phone,
+		user.DateOfBirth)
+	if err != nil {
+		return -1, err
 	}
 	return res.RowsAffected()
 }
@@ -86,13 +91,18 @@ func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) 
 			phone = $3,
 			date_of_birth = $4
 		where id = $5`
-	stmt, er0 := r.DB.Prepare(query)
-	if er0 != nil {
+	stmt, err := r.DB.Prepare(query)
+	if err != nil {
 		return -1, nil
 	}
-	res, er1 := stmt.ExecContext(ctx, user.Username, user.Email, user.Phone, user.DateOfBirth, user.Id)
-	if er1 != nil {
-		return -1, er1
+	res, err := stmt.ExecContext(ctx,
+		user.Username,
+		user.Email,
+		user.Phone,
+		user.DateOfBirth,
+		user.Id)
+	if err != nil {
+		return -1, err
 	}
 	return res.RowsAffected()
 }
