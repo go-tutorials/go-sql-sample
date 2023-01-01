@@ -6,15 +6,12 @@ import (
 	"github.com/core-go/log"
 	"github.com/core-go/search/query"
 	q "github.com/core-go/sql"
-	_ "github.com/go-sql-driver/mysql"
 	"reflect"
 
-	// . "go-service/internal/client"
 	. "go-service/internal/handler"
 	. "go-service/internal/model"
 	. "go-service/internal/repository"
 	. "go-service/internal/service"
-	// "go-service/pkg/client"
 )
 
 type ApplicationContext struct {

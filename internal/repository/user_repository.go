@@ -26,7 +26,14 @@ type userRepository struct {
 }
 
 func (r *userRepository) Load(ctx context.Context, id string) (*User, error) {
-	query := "select id, username, email, phone, date_of_birth from users where id = ?"
+	query := `
+		select
+			id, 
+			username,
+			email,
+			phone,
+			date_of_birth
+		from users where id = $1`
 	rows, err := r.DB.QueryContext(ctx, query, id)
 	if err != nil {
 		return nil, err
@@ -34,14 +41,31 @@ func (r *userRepository) Load(ctx context.Context, id string) (*User, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var user User
-		err = rows.Scan(&user.Id, &user.Username, &user.Phone, &user.Email, &user.DateOfBirth)
+		err = rows.Scan(
+			&user.Id,
+			&user.Username,
+			&user.Phone,
+			&user.Email,
+			&user.DateOfBirth)
 		return &user, nil
 	}
 	return nil, nil
 }
 
 func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) {
-	query := "insert into users (id, username, email, phone, date_of_birth) values (?, ?, ?, ?, ?)"
+	query := `
+		insert into users (
+			id,
+			username,
+			email,
+			phone,
+			date_of_birth)
+		values (
+			$1,
+			$2,
+			$3, 
+			$4,
+			$5)`
 	stmt, er0 := r.DB.Prepare(query)
 	if er0 != nil {
 		return -1, nil
@@ -54,7 +78,14 @@ func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) 
 }
 
 func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) {
-	query := "update users set username = ?, email = ?, phone = ?, date_of_birth = ? where id = ?"
+	query := `
+		update users 
+		set
+			username = $1,
+			email = $2,
+			phone = $3,
+			date_of_birth = $4
+		where id = $5`
 	stmt, er0 := r.DB.Prepare(query)
 	if er0 != nil {
 		return -1, nil
@@ -96,7 +127,7 @@ func (r *userRepository) Patch(ctx context.Context, user map[string]interface{})
 }
 
 func (r *userRepository) Delete(ctx context.Context, id string) (int64, error) {
-	query := "delete from users where id = ?"
+	query := "delete from users where id = $1"
 	stmt, er0 := r.DB.Prepare(query)
 	if er0 != nil {
 		return -1, nil

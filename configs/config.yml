@@ -3,8 +3,8 @@ server:
   port: 8080
 
 sql:
-  driver: mysql
-  data_source_name: root:abcd1234@/masterdata?charset=utf8&parseTime=True&loc=Local
+  driver: postgres
+  data_source_name: postgres://xkjofgbu:MKmT3B0PPIZ6pr057wEHFUMvtad5nXex@satao.db.elephantsql.com/xkjofgbu
 
 log:
   level: info
