@@ -47,7 +47,11 @@ func (h *userHandler) Load(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	JSON(w, http.StatusOK, user)
+	status := http.StatusOK
+	if user == nil {
+		status = http.StatusNotFound
+	}
+	JSON(w, status, user)
 }
 func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var user User
