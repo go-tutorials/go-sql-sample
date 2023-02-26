@@ -122,7 +122,7 @@ paths:
           schema:
             type: string
       requestBody:
-        description: Update an existent user in the store
+        description: a partial user
         content:
           application/json:
             schema:
