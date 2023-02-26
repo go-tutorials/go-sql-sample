@@ -66,7 +66,7 @@ In this sample, search users with these criteria:
 - GET: retrieve a representation of the resource
 - POST: create a new resource
 - PUT: update the resource
-- PATCH: perform a partial update of a resource, refer to [core](https://github.com/core-go/core) and [mongo](https://github.com/core-go/mongo)  
+- PATCH: perform a partial update of a resource, refer to [core-go/core](https://github.com/core-go/core) and [core-go/sql](https://github.com/core-go/sql)
 - DELETE: delete a resource
 
 ## API design for health check
@@ -77,7 +77,7 @@ To check if the service is available.
 {
     "status": "UP",
     "details": {
-        "mongo": {
+        "sql": {
             "status": "UP"
         }
     }
@@ -186,7 +186,7 @@ type UserService interface {
 ```
 We must solve 2 problems:
 1. At http handler layer, we must convert the user struct to map, with json format, and make sure the nested data types are passed correctly.
-2. At repository layer, from json format, we must convert the json format to database format (in this case, we must convert to bson of Mongo)
+2. At repository layer, from json format, we must convert the json format to database format (in this case, we must convert to column)
 
 #### Solutions for patch  
 At http handler layer, we use [core-go/core](https://github.com/core-go/core), to convert the user struct to map, to make sure we just update the fields we need to update
