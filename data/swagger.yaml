@@ -157,6 +157,72 @@ paths:
           description: Invalid userId supplied
         '404':
           description: User not found
+  /user/search:
+    get:
+      tags:
+        - user
+      summary: Search users by userId or username or email or phone or min of  dateOfBirth or max of  dateOfBirth
+      description: 'Get a user by ID'
+      operationId: serachUsers
+      parameters:
+        - name: page
+          in: query
+          description: 'The page index'
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: 'The max of numbers of users'
+          schema:
+            type: integer
+        - name: fields
+          in: query
+          description: 'The return fields. For example, fields=username,email => return 2 fields: username and email'
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          description: 'The userId that needs to be fetched'
+          schema:
+            type: string
+        - name: username
+          in: query
+          description: 'The username that needs to be fetched'
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: 'The email that needs to be fetched'
+          schema:
+            type: string
+        - name: phone
+          in: query
+          description: 'The phone that needs to be fetched'
+          schema:
+            type: string
+        - name: dateOfBirth.min
+          in: query
+          description: 'The min of dateOfBirth that needs to be fetched'
+          schema:
+            type: string
+        - name: dateOfBirth.max
+          in: query
+          description: 'The max of dateOfBirth that needs to be fetched'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid userId supplied
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
 components:
   schemas:
     User:
@@ -178,8 +244,6 @@ components:
           type: string
           format: 'date-time'
           example: '1974-11-16T00:00:00+07:00'
-      xml:
-        name: user
     ApiResponse:
       type: object
       properties:
@@ -189,8 +253,6 @@ components:
           type: string
         message:
           type: string
-      xml:
-        name: '##default'
     SearchResponse:
       type: object
       properties:
@@ -201,5 +263,3 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/User'
-      xml:
-        name: '##default'
