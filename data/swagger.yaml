@@ -250,19 +250,30 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserFilter'
-        responses:
-          '200':
-            description: successful operation
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/UserSearchResponse'
-          '400':
-            description: Invalid UserFilter supplied
-          '500':
-            description: Internal Server Error
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSearchResponse'
+        '400':
+          description: Invalid UserFilter supplied
+        '500':
+          description: Internal Server Error
 components:
   schemas:
+    TimeRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: 'date-time'
+          example: '1974-11-16T00:00:00+07:00'
+        max:
+          type: string
+          format: 'date-time'
+          example: '1975-11-16T00:00:00+07:00'
     User:
       type: object
       properties:
@@ -282,17 +293,6 @@ components:
           type: string
           format: 'date-time'
           example: '1974-11-16T00:00:00+07:00'
-    TimeRange:
-      type: object
-      properties:
-        min:
-          type: string
-          format: 'date-time'
-          example: '1974-11-16T00:00:00+07:00'
-        max:
-          type: string
-          format: 'date-time'
-          example: '1975-11-16T00:00:00+07:00'
     UserFilter:
       type: object
       properties:
