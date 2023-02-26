@@ -187,46 +187,57 @@ paths:
           description: 'The page index'
           schema:
             type: integer
+            example: 1
         - name: limit
           in: query
           description: 'The max of numbers of users'
           schema:
             type: integer
+            example: 120
         - name: fields
           in: query
           description: 'The return fields. For example, fields=username,email => return 2 fields: username and email'
           schema:
-            type: integer
+            type: string
+            example: phone,-id
         - name: userId
           in: query
           description: 'The userId that needs to be fetched'
           schema:
             type: string
+            example: wolverine
         - name: username
           in: query
           description: 'The username that needs to be fetched'
           schema:
             type: string
+            example: james.howlett
         - name: email
           in: query
           description: 'The email that needs to be fetched'
           schema:
             type: string
+            example: james.howlett@gmail.com
         - name: phone
           in: query
           description: 'The phone that needs to be fetched'
           schema:
             type: string
+            example: 0987654321
         - name: dateOfBirth.min
           in: query
           description: 'The min of dateOfBirth that needs to be fetched'
           schema:
             type: string
+            format: date-time
+            example: 1953-11-16T00:00:00+07:00
         - name: dateOfBirth.max
           in: query
           description: 'The max of dateOfBirth that needs to be fetched'
           schema:
             type: string
+            format: date-time
+            example: 1976-11-16T00:00:00+07:00
       responses:
         '200':
           description: successful operation
