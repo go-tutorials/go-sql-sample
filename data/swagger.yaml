@@ -101,7 +101,13 @@ paths:
         '400':
           description: Invalid user supplied
         '404':
-          description: User not found
+          description: User not found. Return 0
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Internal Server Error
     patch:
       tags:
         - user
@@ -131,7 +137,13 @@ paths:
         '400':
           description: Invalid user supplied
         '404':
-          description: User not found
+          description: User not found. Return 0
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Internal Server Error
     delete:
       tags:
         - user
@@ -152,11 +164,16 @@ paths:
             application/json:
               schema:
                 type: integer
-
         '400':
           description: Invalid userId supplied
         '404':
-          description: User not found
+          description: User not found. Return 0
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Internal Server Error
   /user/search:
     get:
       tags:
@@ -216,13 +233,34 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchResponse'
+                $ref: '#/components/schemas/UserSearchResponse'
         '400':
-          description: Invalid userId supplied
-        '404':
-          description: User not found
+          description: Invalid parameters supplied
         '500':
           description: Internal Server Error
+    post:
+      tags:
+        - user
+      summary: search users by POST
+      description: search users by POST
+      operationId: searchUserByPost
+      requestBody:
+        description: Search users by POST
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserFilter'
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/UserSearchResponse'
+          '400':
+            description: Invalid UserFilter supplied
+          '500':
+            description: Internal Server Error
 components:
   schemas:
     User:
@@ -244,16 +282,43 @@ components:
           type: string
           format: 'date-time'
           example: '1974-11-16T00:00:00+07:00'
-    ApiResponse:
+    TimeRange:
       type: object
       properties:
-        code:
+        min:
+          type: string
+          format: 'date-time'
+          example: '1974-11-16T00:00:00+07:00'
+        max:
+          type: string
+          format: 'date-time'
+          example: '1975-11-16T00:00:00+07:00'
+    UserFilter:
+      type: object
+      properties:
+        page:
           type: integer
-        type:
+          description: 'Page index'
+          example: 1
+        limit:
+          type: integer
+          description: 'Maximum of numbers of users'
+          example: 20
+        id:
           type: string
-        message:
+          example: 'wolverine'
+        username:
           type: string
-    SearchResponse:
+          example: 'james.howlett'
+        email:
+          type: string
+          example: 'james.howlett@gmail.com'
+        phone:
+          type: string
+          example: '0987654321'
+        dateOfBirth:
+          $ref: '#/components/schemas/TimeRange'
+    UserSearchResponse:
       type: object
       properties:
         total:
