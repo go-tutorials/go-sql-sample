@@ -21,7 +21,7 @@ tags:
       description: Find out more about user
       url: http://swagger.io
 paths:
-  /user:
+  /users:
     post:
       tags:
         - user
@@ -45,7 +45,7 @@ paths:
           description: Invalid user supplied
         '500':
           description: Internal Server Error
-  /user/{userId}:
+  /users/{userId}:
     get:
       tags:
         - user
@@ -174,7 +174,7 @@ paths:
                 type: integer
         '500':
           description: Internal Server Error
-  /user/search:
+  /users/search:
     get:
       tags:
         - user
