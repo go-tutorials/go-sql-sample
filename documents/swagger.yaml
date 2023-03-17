@@ -287,6 +287,9 @@ components:
           example: '1975-11-16T00:00:00+07:00'
     User:
       type: object
+      required:
+        - username
+        - phone
       properties:
         id:
           type: string
