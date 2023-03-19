@@ -16,7 +16,7 @@ import (
 
 type ApplicationContext struct {
 	Health *health.Handler
-	User   UserHandler
+	User   UserPort
 }
 
 func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
@@ -38,7 +38,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 	userRepository := NewUserClient(client, conf.Client.Endpoint.Url)*/
-	userRepository := NewUserRepository(db)
+	userRepository := NewUserAdapter(db)
 	userService := NewUserService(userRepository)
 	userHandler := NewUserHandler(userSearchBuilder.Search, userService, logError)
 

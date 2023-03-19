@@ -17,15 +17,15 @@ type UserRepository interface {
 	Delete(ctx context.Context, id string) (int64, error)
 }
 
-func NewUserRepository(db *sql.DB) UserRepository {
-	return &userRepository{DB: db}
+func NewUserAdapter(db *sql.DB) *UserAdapter {
+	return &UserAdapter{DB: db}
 }
 
-type userRepository struct {
+type UserAdapter struct {
 	DB *sql.DB
 }
 
-func (r *userRepository) Load(ctx context.Context, id string) (*User, error) {
+func (r *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 	query := `
 		select
 			id, 
@@ -52,7 +52,7 @@ func (r *userRepository) Load(ctx context.Context, id string) (*User, error) {
 	return nil, nil
 }
 
-func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) {
+func (r *UserAdapter) Create(ctx context.Context, user *User) (int64, error) {
 	query := `
 		insert into users (
 			id,
@@ -82,7 +82,7 @@ func (r *userRepository) Create(ctx context.Context, user *User) (int64, error) 
 	return res.RowsAffected()
 }
 
-func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) {
+func (r *UserAdapter) Update(ctx context.Context, user *User) (int64, error) {
 	query := `
 		update users 
 		set
@@ -107,7 +107,7 @@ func (r *userRepository) Update(ctx context.Context, user *User) (int64, error) 
 	return res.RowsAffected()
 }
 
-func (r *userRepository) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
+func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
 	updateClause := "update users set"
 	whereClause := fmt.Sprintf("where id='%s'", user["id"])
 
@@ -136,7 +136,7 @@ func (r *userRepository) Patch(ctx context.Context, user map[string]interface{})
 	return res.RowsAffected()
 }
 
-func (r *userRepository) Delete(ctx context.Context, id string) (int64, error) {
+func (r *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	query := "delete from users where id = $1"
 	stmt, err := r.DB.Prepare(query)
 	if err != nil {
