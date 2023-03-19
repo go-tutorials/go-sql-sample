@@ -222,7 +222,8 @@ DELETE /users/wolverine
 ## Common libraries
 - [core-go/health](https://github.com/core-go/health): include HealthHandler, HealthChecker, SqlHealthChecker
 - [core-go/config](https://github.com/core-go/config): to load the config file, and merge with other environments (SIT, UAT, ENV)
-- [core-go/log](https://github.com/core-go/log): log and log middleware
+- [core-go/log](https://github.com/core-go/log): logging
+- [core-go/middleware](https://github.com/core-go/log): middleware log tracing
 
 ### core-go/health
 To check if the service is available, refer to [core-go/health](https://github.com/core-go/health)
