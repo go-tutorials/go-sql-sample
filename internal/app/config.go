@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/core-go/core"
-	"github.com/core-go/log"
+	"github.com/core-go/log/zap"
 	mid "github.com/core-go/middleware"
 	"github.com/core-go/sql"
 

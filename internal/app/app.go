@@ -2,14 +2,13 @@ package app
 
 import (
 	"context"
+
+	v "github.com/core-go/core/v10"
 	"github.com/core-go/health"
-	"github.com/core-go/log"
-	"github.com/core-go/search/query"
+	"github.com/core-go/log/zap"
 	q "github.com/core-go/sql"
-	"reflect"
 
 	. "go-service/internal/handler"
-	. "go-service/internal/model"
 	. "go-service/internal/repository"
 	. "go-service/internal/service"
 )
@@ -19,28 +18,20 @@ type ApplicationContext struct {
 	User   UserPort
 }
 
-func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
-	db, err := q.OpenByConfig(conf.Sql)
+func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
+	db, err := q.OpenByConfig(cfg.Sql)
 	if err != nil {
 		return nil, err
 	}
 	logError := log.LogError
+	validator := v.NewValidator()
 
-	userType := reflect.TypeOf(User{})
-	userQueryBuilder := query.NewBuilder(db, "users", userType)
-	userSearchBuilder, err := q.NewSearchBuilder(db, userType, userQueryBuilder.BuildQuery)
+	userRepository, err := NewUserAdapter(db, BuildQuery)
 	if err != nil {
 		return nil, err
 	}
-/*
-	client, _, _, err := client.InitializeClient(conf.Client)
-	if err != nil {
-		return nil, err
-	}
-	userRepository := NewUserClient(client, conf.Client.Endpoint.Url)*/
-	userRepository := NewUserAdapter(db)
 	userService := NewUserService(userRepository)
-	userHandler := NewUserHandler(userSearchBuilder.Search, userService, logError)
+	userHandler := NewUserHandler(userService, validator.Validate, logError)
 
 	sqlChecker := q.NewHealthChecker(db)
 	healthHandler := health.NewHandler(sqlChecker)
