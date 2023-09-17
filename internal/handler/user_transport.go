@@ -2,7 +2,7 @@ package handler
 
 import "net/http"
 
-type UserPort interface {
+type UserTransport interface {
 	Search(w http.ResponseWriter, r *http.Request)
 	Load(w http.ResponseWriter, r *http.Request)
 	Create(w http.ResponseWriter, r *http.Request)
