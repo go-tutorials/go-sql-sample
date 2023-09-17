@@ -24,7 +24,10 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 	logError := log.LogError
-	validator := v.NewValidator()
+	validator, err := v.NewValidator()
+	if err != nil {
+		return nil, err
+	}
 
 	userRepository, err := NewUserAdapter(db, BuildQuery)
 	if err != nil {

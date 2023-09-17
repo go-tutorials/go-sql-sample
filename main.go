@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-
 	"github.com/core-go/config"
 	"github.com/core-go/core"
+	"github.com/core-go/core/header"
+	"github.com/core-go/core/random"
 	"github.com/core-go/log/zap"
 	mid "github.com/core-go/middleware"
 	"github.com/gorilla/mux"
@@ -27,6 +28,8 @@ func main() {
 	if log.IsInfoEnable() {
 		r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
 	}
+	headerHandler := header.NewHeaderHandler(cfg.Response, GenerateId)
+	r.Use(headerHandler.HandleHeader())
 	r.Use(mid.Recover(log.PanicMsg))
 
 	ctx := context.Background()
@@ -39,4 +42,7 @@ func main() {
 	if err = server.ListenAndServe(); err != nil {
 		log.Error(ctx, err.Error())
 	}
+}
+func GenerateId() string {
+	return random.Random(16)
 }

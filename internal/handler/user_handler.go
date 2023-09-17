@@ -14,16 +14,21 @@ import (
 	. "go-service/internal/service"
 )
 
-func NewUserHandler(service UserService, validate func(context.Context, interface{}) ([]core.ErrorMessage, error), logError func(context.Context, string,  ...map[string]interface{})) *UserHandler {
+const InternalServerError = "Internal Server Error"
+
+func NewUserHandler(service UserService, validate core.Validate, logError core.Log) *UserHandler {
+	userType := reflect.TypeOf(User{})
+	_, jsonMap, _ := core.BuildMapField(userType)
 	filterType := reflect.TypeOf(UserFilter{})
 	paramIndex, filterIndex := s.BuildParams(filterType)
-	return &UserHandler{service: service, Validate: validate, LogError: logError, paramIndex: paramIndex, filterIndex: filterIndex}
+	return &UserHandler{service: service, Validate: validate, jsonMap: jsonMap, LogError: logError, paramIndex: paramIndex, filterIndex: filterIndex}
 }
 
 type UserHandler struct {
 	service     UserService
-	Validate    func(context.Context, interface{}) ([]core.ErrorMessage, error)
-	LogError    func(context.Context, string, ...map[string]interface{})
+	Validate    core.Validate
+	LogError    core.Log
+	jsonMap     map[string]int
 	paramIndex  map[string]int
 	filterIndex int
 }
@@ -53,7 +58,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	errors, er2 := h.Validate(r.Context(), &user)
 	if er2 != nil {
 		h.LogError(r.Context(), er2.Error())
-		http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
 	if len(errors) > 0 {
@@ -90,7 +95,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	errors, er2 := h.Validate(r.Context(), &user)
 	if er2 != nil {
 		h.LogError(r.Context(), er2.Error())
-		http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
 	if len(errors) > 0 {
@@ -113,8 +118,6 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user User
-	userType := reflect.TypeOf(user)
-	_, jsonMap, _ := core.BuildMapField(userType)
 	body, er1 := core.BuildMapAndStruct(r, &user)
 	if er1 != nil {
 		http.Error(w, er1.Error(), http.StatusInternalServerError)
@@ -126,7 +129,7 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Id not match", http.StatusBadRequest)
 		return
 	}
-	json, er2 := core.BodyToJsonMap(r, user, body, []string{"id"}, jsonMap)
+	json, er2 := core.BodyToJsonMap(r, user, body, []string{"id"}, h.jsonMap)
 	if er2 != nil {
 		http.Error(w, er2.Error(), http.StatusInternalServerError)
 		return
@@ -135,7 +138,7 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	errors, er3 := h.Validate(r.Context(), &user)
 	if er3 != nil {
 		h.LogError(r.Context(), er3.Error())
-		http.Error(w, core.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
 	if len(errors) > 0 {

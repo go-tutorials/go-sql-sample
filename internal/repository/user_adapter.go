@@ -182,6 +182,7 @@ func (r *UserAdapter) Search(ctx context.Context, filter *UserFilter) ([]User, i
 	err = s.Query(ctx, r.DB, r.Map, &users, pagingQuery, params...)
 	return users, total, err
 }
+
 func BuildQuery(filter *UserFilter) (string, []interface{}) {
 	query := "select * from users"
 	where, params := BuildFilter(filter)
