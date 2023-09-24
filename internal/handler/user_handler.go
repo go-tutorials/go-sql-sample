@@ -177,7 +177,7 @@ func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	core.JSON(w, http.StatusOK, &s.Result{List: &users, Total: total})
+	JSON(w, http.StatusOK, &s.Result{List: &users, Total: total})
 }
 
 func JSON(w http.ResponseWriter, code int, res interface{}) error {
