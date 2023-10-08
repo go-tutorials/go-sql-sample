@@ -49,8 +49,8 @@ github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354/go.mod h1:WmhPx2Nbnht
 github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
 github.com/core-go/config v1.0.1 h1:ZIfpd+rfyajyePVxe7IKwGtgcJZ7lsbewTzVgfgMZMk=
 github.com/core-go/config v1.0.1/go.mod h1:fHfbCGBNq6FMQneRMtDg8tkTwut3KmmYxcjgbW37+As=
-github.com/core-go/core v0.3.8 h1:DHYGqH1Ym5duClOoX8+m2nz+ve7cJ6jLPk6BWmmsa2c=
-github.com/core-go/core v0.3.8/go.mod h1:bfN1xcZGpu0cnA6qhv/JyTkFHnk9IJgqd/JnevDxGkA=
+github.com/core-go/core v0.4.1 h1:RrFDXp0ZG5xwauje+Pcwa+oq0DtxuRBCu18eHCpN5OA=
+github.com/core-go/core v0.4.1/go.mod h1:bfN1xcZGpu0cnA6qhv/JyTkFHnk9IJgqd/JnevDxGkA=
 github.com/core-go/health v1.0.0 h1:mHBd8iQtGC1FqfUBGT3AgsJL/16j+QAJ9S0J3OjYzTg=
 github.com/core-go/health v1.0.0/go.mod h1:7J9YQqCPSZW5+5BLVtZPQ/FULyk+LHZgSTnWFdL+oP0=
 github.com/core-go/log v1.0.0 h1:TaY24vLffWuU+aM/Bx2gfMo2Gz0W2b19ctSjDWwAY8U=

@@ -72,7 +72,8 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	JSON(w, http.StatusCreated, res)
+	status := GetStatus(res, http.StatusCreated, http.StatusConflict)
+	JSON(w, status, res)
 }
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var user User
@@ -186,11 +187,25 @@ func JSON(w http.ResponseWriter, code int, res interface{}) error {
 	w.WriteHeader(code)
 	return json.NewEncoder(w).Encode(res)
 }
-func GetStatus(status int64) int {
-	if status <= 0 {
+func GetStatus(status int64, opts ...int) int {
+	if status > 0 {
+		if len(opts) > 0 {
+			return opts[0]
+		}
+		return http.StatusOK
+	}
+	if status == 0 {
+		if len(opts) > 1 {
+			return opts[1]
+		}
 		return http.StatusNotFound
 	}
-	return http.StatusOK
+	if len(opts) > 2 {
+		return opts[2]
+	} else if len(opts) > 1 {
+		return opts[1]
+	}
+	return http.StatusConflict
 }
 func IsFound(res interface{}) int {
 	if isNil(res) {

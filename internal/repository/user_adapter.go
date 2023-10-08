@@ -87,6 +87,9 @@ func (r *UserAdapter) Create(ctx context.Context, user *User) (int64, error) {
 		user.Phone,
 		user.DateOfBirth)
 	if err != nil {
+		if strings.Index(err.Error(), "duplicate key") >= 0 {
+			return -1, nil
+		}
 		return -1, err
 	}
 	return res.RowsAffected()
@@ -114,7 +117,11 @@ func (r *UserAdapter) Update(ctx context.Context, user *User) (int64, error) {
 	if err != nil {
 		return -1, err
 	}
-	return res.RowsAffected()
+	count, err := res.RowsAffected()
+	if count == 0 {
+		return count, nil
+	}
+	return count, err
 }
 
 func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
