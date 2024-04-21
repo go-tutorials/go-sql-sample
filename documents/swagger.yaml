@@ -36,13 +36,19 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '201':
-          description: 'return integer. 1: success'
+          description: 'return the saved user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid user supplied
+        '409':
+          description: Duplicate user Id. Return 0
           content:
             application/json:
               schema:
                 type: integer
-        '400':
-          description: Invalid user supplied
         '422':
           description: Validation errors
           content:
@@ -57,8 +63,8 @@ paths:
     get:
       tags:
         - user
-      summary: Get user by user ID
-      description: 'Get a user by ID'
+      summary: Get user by user Id
+      description: 'Get a user by Id'
       operationId: getUserById
       parameters:
         - name: userId
@@ -101,15 +107,21 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: 'return integer. 1: success'
+          description: 'return the saved user'
           content:
             application/json:
               schema:
-                type: integer
+                $ref: '#/components/schemas/User'
         '400':
           description: Invalid user supplied
         '404':
           description: User not found. Return 0
+          content:
+            application/json:
+              schema:
+                type: integer
+        '409':
+          description: Conflict between multiple simultaneous updates. Return -1
           content:
             application/json:
               schema:
@@ -145,15 +157,21 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: 'return integer. 1: success'
+          description: 'return the saved user'
           content:
             application/json:
               schema:
-                type: integer
+                $ref: '#/components/schemas/User'
         '400':
           description: Invalid user supplied
         '404':
           description: User not found. Return 0
+          content:
+            application/json:
+              schema:
+                type: integer
+        '409':
+          description: Conflict between multiple simultaneous updates. Return -1
           content:
             application/json:
               schema:
@@ -172,7 +190,7 @@ paths:
       tags:
         - user
       summary: Delete user
-      description: Delete a user by ID.
+      description: Delete a user by Id.
       operationId: deleteUser
       parameters:
         - name: userId
@@ -203,7 +221,7 @@ paths:
       tags:
         - user
       summary: Search users by userId or username or email or phone or min of  dateOfBirth or max of  dateOfBirth
-      description: 'Get a user by ID'
+      description: 'Search users by userId or username or email or phone or min of  dateOfBirth or max of  dateOfBirth'
       operationId: serachUsers
       parameters:
         - name: page

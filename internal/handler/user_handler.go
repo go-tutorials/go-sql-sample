@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"reflect"
@@ -43,10 +44,15 @@ func (h *UserHandler) Load(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.service.Load(r.Context(), id)
 	if err != nil {
+		h.LogError(r.Context(), fmt.Sprintf("Error to get user %s: %s", id, err.Error()))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	JSON(w, IsFound(user), user)
+	if user == nil {
+		JSON(w, http.StatusNotFound, nil)
+	} else {
+		JSON(w, http.StatusOK, user)
+	}
 }
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var user User
@@ -58,7 +64,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	errors, er2 := h.Validate(r.Context(), &user)
 	if er2 != nil {
-		h.LogError(r.Context(), er2.Error())
+		h.LogError(r.Context(), er2.Error(), MakeMap(user))
 		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
@@ -72,8 +78,11 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	status := GetStatus(res, http.StatusCreated, http.StatusConflict)
-	JSON(w, status, res)
+	if res < 1 {
+		JSON(w, http.StatusConflict, res)
+	} else {
+		JSON(w, http.StatusCreated, user)
+	}
 }
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var user User
@@ -96,7 +105,7 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	errors, er2 := h.Validate(r.Context(), &user)
 	if er2 != nil {
-		h.LogError(r.Context(), er2.Error())
+		h.LogError(r.Context(), er2.Error(), MakeMap(user))
 		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
@@ -106,11 +115,17 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	res, er3 := h.service.Update(r.Context(), &user)
 	if er3 != nil {
+		h.LogError(r.Context(), er3.Error(), MakeMap(user))
 		http.Error(w, er3.Error(), http.StatusInternalServerError)
 		return
 	}
-	status := GetStatus(res)
-	JSON(w, status, res)
+	if res < 1 {
+		JSON(w, http.StatusConflict, res)
+	} else if res == 0 {
+		JSON(w, http.StatusNotFound, res)
+	} else {
+		JSON(w, http.StatusOK, user)
+	}
 }
 func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
@@ -139,7 +154,7 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	r = r.WithContext(context.WithValue(r.Context(), "method", "patch"))
 	errors, er3 := h.Validate(r.Context(), &user)
 	if er3 != nil {
-		h.LogError(r.Context(), er3.Error())
+		h.LogError(r.Context(), er3.Error(), MakeMap(user))
 		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
@@ -149,11 +164,17 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	}
 	res, er4 := h.service.Patch(r.Context(), json)
 	if er4 != nil {
-		http.Error(w, er4.Error(), http.StatusInternalServerError)
+		h.LogError(r.Context(), er4.Error(), MakeMap(user))
+		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
-	status := GetStatus(res)
-	JSON(w, status, res)
+	if res < 1 {
+		JSON(w, http.StatusConflict, res)
+	} else if res == 0 {
+		JSON(w, http.StatusNotFound, res)
+	} else {
+		JSON(w, http.StatusOK, user)
+	}
 }
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
@@ -163,11 +184,15 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 	res, err := h.service.Delete(r.Context(), id)
 	if err != nil {
+		h.LogError(r.Context(), fmt.Sprintf("Error to delete user %s: %s", id, err.Error()))
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	status := GetStatus(res)
-	JSON(w, status, res)
+	if res < 1 {
+		JSON(w, http.StatusNotFound, res)
+	} else {
+		JSON(w, http.StatusOK, res)
+	}
 }
 func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 	filter := UserFilter{Filter: &s.Filter{}}
@@ -186,42 +211,6 @@ func JSON(w http.ResponseWriter, code int, res interface{}) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	return json.NewEncoder(w).Encode(res)
-}
-func GetStatus(status int64, opts ...int) int {
-	if status > 0 {
-		if len(opts) > 0 {
-			return opts[0]
-		}
-		return http.StatusOK
-	}
-	if status == 0 {
-		if len(opts) > 1 {
-			return opts[1]
-		}
-		return http.StatusNotFound
-	}
-	if len(opts) > 2 {
-		return opts[2]
-	} else if len(opts) > 1 {
-		return opts[1]
-	}
-	return http.StatusConflict
-}
-func IsFound(res interface{}) int {
-	if isNil(res) {
-		return http.StatusNotFound
-	}
-	return http.StatusOK
-}
-func isNil(i interface{}) bool {
-	if i == nil {
-		return true
-	}
-	switch reflect.TypeOf(i).Kind() {
-	case reflect.Ptr, reflect.Map, reflect.Array, reflect.Chan, reflect.Slice:
-		return reflect.ValueOf(i).IsNil()
-	}
-	return false
 }
 func MakeMap(res interface{}, opts ...string) map[string]interface{} {
 	key := "request"

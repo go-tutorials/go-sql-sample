@@ -22,17 +22,20 @@ func NewUserAdapter(db *sql.DB, buildQuery func(*UserFilter) (string, []interfac
 			return userQueryBuilder.BuildQuery(filter)
 		}
 	}
-	fieldsIndex, err := s.GetColumnIndexes(userType)
+	fieldsIndex, _, jsonColumnMap, keys, _, _, buildParam, _,  err := s.Init(userType, db)
 	if err != nil {
 		return nil, err
 	}
-	return &UserAdapter{DB: db, Map: fieldsIndex, BuildQuery: buildQuery}, nil
+	return &UserAdapter{DB: db, Map: fieldsIndex, Keys: keys, JsonColumnMap: jsonColumnMap, BuildParam: buildParam, BuildQuery: buildQuery}, nil
 }
 
 type UserAdapter struct {
-	DB         *sql.DB
-	Map        map[string]int
-	BuildQuery func(*UserFilter) (string, []interface{})
+	DB            *sql.DB
+	Map           map[string]int
+	Keys          []string
+	JsonColumnMap map[string]string
+	BuildParam    func(int) string
+	BuildQuery    func(*UserFilter) (string, []interface{})
 }
 
 func (r *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
@@ -54,8 +57,8 @@ func (r *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 		err = rows.Scan(
 			&user.Id,
 			&user.Username,
-			&user.Phone,
 			&user.Email,
+			&user.Phone,
 			&user.DateOfBirth)
 		return &user, nil
 	}
@@ -125,28 +128,9 @@ func (r *UserAdapter) Update(ctx context.Context, user *User) (int64, error) {
 }
 
 func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (int64, error) {
-	updateClause := "update users set"
-	whereClause := fmt.Sprintf("where id='%s'", user["id"])
-
-	setClause := make([]string, 0)
-	if user["username"] != nil {
-		msg := fmt.Sprintf("username='%s'", fmt.Sprint(user["username"]))
-		setClause = append(setClause, msg)
-	}
-	if user["email"] != nil {
-		msg := fmt.Sprintf("email='%s'", fmt.Sprint(user["email"]))
-		setClause = append(setClause, msg)
-	}
-	if user["phone"] != nil {
-		msg := fmt.Sprintf("phone='%s'", fmt.Sprint(user["phone"]))
-		setClause = append(setClause, msg)
-	}
-
-	setClauseRes := strings.Join(setClause, ",")
-	querySlice := []string{updateClause, setClauseRes, whereClause}
-	query := strings.Join(querySlice, " ")
-
-	res, err := r.DB.ExecContext(ctx, query)
+	colMap := s.JSONToColumns(user, r.JsonColumnMap)
+	query, args := s.BuildToPatch("users", colMap, r.Keys, r.BuildParam)
+	res, err := r.DB.ExecContext(ctx, query, args...)
 	if err != nil {
 		return -1, err
 	}
@@ -155,11 +139,7 @@ func (r *UserAdapter) Patch(ctx context.Context, user map[string]interface{}) (i
 
 func (r *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	query := "delete from users where id = $1"
-	stmt, err := r.DB.Prepare(query)
-	if err != nil {
-		return -1, nil
-	}
-	res, err := stmt.ExecContext(ctx, id)
+	res, err := r.DB.ExecContext(ctx, query, id)
 	if err != nil {
 		return -1, err
 	}

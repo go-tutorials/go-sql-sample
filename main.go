@@ -6,6 +6,7 @@ import (
 	"github.com/core-go/core"
 	"github.com/core-go/core/header"
 	"github.com/core-go/core/random"
+	"github.com/core-go/log/strings"
 	"github.com/core-go/log/zap"
 	mid "github.com/core-go/middleware"
 	"github.com/gorilla/mux"
@@ -24,7 +25,7 @@ func main() {
 
 	log.Initialize(cfg.Log)
 	r.Use(mid.BuildContext)
-	logger := mid.NewLogger()
+	logger := mid.NewMaskLogger(MaskLog, MaskLog)
 	if log.IsInfoEnable() {
 		r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
 	}
@@ -45,4 +46,13 @@ func main() {
 }
 func GenerateId() string {
 	return random.Random(16)
+}
+func MaskLog(name string, v interface{}) interface{}  {
+	if name == "phone" {
+		s, ok := v.(string)
+		if ok {
+			return strings.Mask(s, 0, 3, "*")
+		}
+	}
+	return v
 }
