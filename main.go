@@ -25,7 +25,7 @@ func main() {
 
 	log.Initialize(cfg.Log)
 	r.Use(mid.BuildContext)
-	logger := mid.NewMaskLogger(MaskLog, MaskLog)
+	logger := mid.NewMaskLogger(Mask, Mask)
 	if log.IsInfoEnable() {
 		r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
 	}
@@ -47,12 +47,12 @@ func main() {
 func GenerateId() string {
 	return random.Random(16)
 }
-func MaskLog(name string, v interface{}) interface{}  {
-	if name == "phone" {
-		s, ok := v.(string)
-		if ok {
-			return strings.Mask(s, 0, 3, "*")
+func Mask(obj map[string]interface{}){
+	v, ok := obj["phone"]
+	if ok {
+		s, ok2 := v.(string)
+		if ok2 && len(s) > 3 {
+			obj["phone"] = strings.Mask(s, 0, 3, "*")
 		}
 	}
-	return v
 }
