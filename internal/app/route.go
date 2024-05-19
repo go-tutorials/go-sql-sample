@@ -3,8 +3,15 @@ package app
 import (
 	"context"
 
-	m "github.com/core-go/core"
 	"github.com/gorilla/mux"
+)
+
+const (
+	GET    = "GET"
+	POST   = "POST"
+	PUT    = "PUT"
+	PATCH  = "PATCH"
+	DELETE = "DELETE"
 )
 
 func Route(ctx context.Context, r *mux.Router, cfg Config) error {
@@ -12,15 +19,15 @@ func Route(ctx context.Context, r *mux.Router, cfg Config) error {
 	if err != nil {
 		return err
 	}
-	r.HandleFunc("/health", app.Health.Check).Methods(m.GET)
+	r.HandleFunc("/health", app.Health.Check).Methods(GET)
 
 	user := "/users"
-	r.HandleFunc(user+"/search", app.User.Search).Methods(m.GET, m.POST)
-	r.HandleFunc(user+"/{id}", app.User.Load).Methods(m.GET)
-	r.HandleFunc(user, app.User.Create).Methods(m.POST)
-	r.HandleFunc(user+"/{id}", app.User.Update).Methods(m.PUT)
-	r.HandleFunc(user+"/{id}", app.User.Patch).Methods(m.PATCH)
-	r.HandleFunc(user+"/{id}", app.User.Delete).Methods(m.DELETE)
+	r.HandleFunc(user+"/search", app.User.Search).Methods(GET, POST)
+	r.HandleFunc(user+"/{id}", app.User.Load).Methods(GET)
+	r.HandleFunc(user, app.User.Create).Methods(POST)
+	r.HandleFunc(user+"/{id}", app.User.Update).Methods(PUT)
+	r.HandleFunc(user+"/{id}", app.User.Patch).Methods(PATCH)
+	r.HandleFunc(user+"/{id}", app.User.Delete).Methods(DELETE)
 
 	return nil
 }
