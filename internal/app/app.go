@@ -3,19 +3,16 @@ package app
 import (
 	"context"
 
-	v "github.com/core-go/core/v10"
 	"github.com/core-go/health"
 	"github.com/core-go/log/zap"
 	q "github.com/core-go/sql"
 
-	"go-service/internal/user/handler"
-	"go-service/internal/user/repository"
-	"go-service/internal/user/service"
+	"go-service/internal/user"
 )
 
 type ApplicationContext struct {
 	Health *health.Handler
-	User   handler.UserTransport
+	User   user.UserTransport
 }
 
 func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
@@ -24,17 +21,11 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 	logError := log.LogError
-	validator, err := v.NewValidator()
-	if err != nil {
-		return nil, err
-	}
 
-	userRepository, err := repository.NewUserAdapter(db, repository.BuildQuery)
+	userHandler, err := user.NewUserHandler(ctx, db, logError)
 	if err != nil {
 		return nil, err
 	}
-	userService := service.NewUserService(userRepository)
-	userHandler := handler.NewUserHandler(userService, validator.Validate, logError)
 
 	sqlChecker := q.NewHealthChecker(db)
 	healthHandler := health.NewHandler(sqlChecker)
