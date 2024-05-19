@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	. "go-service/internal/model"
+	"go-service/internal/user/model"
 )
 
 type UserClient struct {
@@ -20,7 +20,7 @@ func NewUserClient(client *http.Client, url string) *UserClient {
 	return &UserClient{Client: client, Url: url}
 }
 
-func (c *UserClient) Load(ctx context.Context, id string) (*User, error) {
+func (c *UserClient) Load(ctx context.Context, id string) (*model.User, error) {
 	requestURL := fmt.Sprintf("%s/%s", c.Url, id)
 
 	req, err := http.NewRequest("GET", requestURL, nil)
@@ -39,7 +39,7 @@ func (c *UserClient) Load(ctx context.Context, id string) (*User, error) {
 		panic(err)
 	}
 
-	var res User
+	var res model.User
 	err = json.Unmarshal(body, &res)
 	if err != nil {
 		panic(err)
@@ -48,7 +48,7 @@ func (c *UserClient) Load(ctx context.Context, id string) (*User, error) {
 	return &res, err
 }
 
-func (c *UserClient) Create(ctx context.Context, user *User) (int64, error) {
+func (c *UserClient) Create(ctx context.Context, user *model.User) (int64, error) {
 	requestURL := c.Url
 
 	data, err := json.Marshal(user)
@@ -75,7 +75,7 @@ func (c *UserClient) Create(ctx context.Context, user *User) (int64, error) {
 	}
 }
 
-func (c *UserClient) Update(ctx context.Context, user *User) (int64, error) {
+func (c *UserClient) Update(ctx context.Context, user *model.User) (int64, error) {
 	requestURL := fmt.Sprintf("%s/%s", c.Url, user.Id)
 
 	data, err := json.Marshal(user)

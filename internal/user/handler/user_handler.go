@@ -4,30 +4,30 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
 	"reflect"
 
 	"github.com/core-go/core"
 	s "github.com/core-go/search"
+	"github.com/gorilla/mux"
 
-	. "go-service/internal/filter"
-	. "go-service/internal/model"
-	. "go-service/internal/service"
+	"go-service/internal/user/filter"
+	"go-service/internal/user/model"
+	"go-service/internal/user/service"
 )
 
 const InternalServerError = "Internal Server Error"
 
-func NewUserHandler(service UserService, validate func(context.Context, interface{}) ([]core.ErrorMessage, error), logError func(context.Context, string, ...map[string]interface{})) *UserHandler {
-	userType := reflect.TypeOf(User{})
+func NewUserHandler(service service.UserService, validate func(context.Context, interface{}) ([]core.ErrorMessage, error), logError func(context.Context, string, ...map[string]interface{})) *UserHandler {
+	userType := reflect.TypeOf(model.User{})
 	_, jsonMap, _ := core.BuildMapField(userType)
-	filterType := reflect.TypeOf(UserFilter{})
+	filterType := reflect.TypeOf(filter.UserFilter{})
 	paramIndex, filterIndex := s.BuildParams(filterType)
 	return &UserHandler{service: service, Validate: validate, jsonMap: jsonMap, LogError: logError, paramIndex: paramIndex, filterIndex: filterIndex}
 }
 
 type UserHandler struct {
-	service     UserService
+	service     service.UserService
 	Validate    func(context.Context, interface{}) ([]core.ErrorMessage, error)
 	LogError    func(context.Context, string, ...map[string]interface{})
 	jsonMap     map[string]int
@@ -55,7 +55,7 @@ func (h *UserHandler) Load(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	var user User
+	var user model.User
 	er1 := json.NewDecoder(r.Body).Decode(&user)
 	defer r.Body.Close()
 	if er1 != nil {
@@ -85,7 +85,7 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
-	var user User
+	var user model.User
 	er1 := json.NewDecoder(r.Body).Decode(&user)
 	defer r.Body.Close()
 	if er1 != nil {
@@ -134,7 +134,7 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user User
+	var user model.User
 	body, er1 := core.BuildMapAndStruct(r, &user)
 	if er1 != nil {
 		http.Error(w, er1.Error(), http.StatusInternalServerError)
@@ -195,10 +195,10 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
-	filter := UserFilter{Filter: &s.Filter{}}
+	filter := filter.UserFilter{Filter: &s.Filter{}}
 	s.Decode(r, &filter, h.paramIndex, h.filterIndex)
 
-	var users []User
+	var users []model.User
 	users, total, err := h.service.Search(r.Context(), &filter)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

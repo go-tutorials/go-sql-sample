@@ -10,15 +10,15 @@ import (
 	"github.com/core-go/search/query"
 	s "github.com/core-go/sql"
 
-	. "go-service/internal/filter"
-	. "go-service/internal/model"
+	"go-service/internal/user/filter"
+	"go-service/internal/user/model"
 )
 
-func NewUserAdapter(db *sql.DB, buildQuery func(*UserFilter) (string, []interface{})) (*UserAdapter, error) {
-	userType := reflect.TypeOf(User{})
+func NewUserAdapter(db *sql.DB, buildQuery func(*filter.UserFilter) (string, []interface{})) (*UserAdapter, error) {
+	userType := reflect.TypeOf(model.User{})
 	if buildQuery == nil {
 		userQueryBuilder := query.NewBuilder(db, "users", userType)
-		buildQuery = func(filter *UserFilter) (s string, i []interface{}) {
+		buildQuery = func(filter *filter.UserFilter) (s string, i []interface{}) {
 			return userQueryBuilder.BuildQuery(filter)
 		}
 	}
@@ -35,10 +35,10 @@ type UserAdapter struct {
 	Keys          []string
 	JsonColumnMap map[string]string
 	BuildParam    func(int) string
-	BuildQuery    func(*UserFilter) (string, []interface{})
+	BuildQuery    func(*filter.UserFilter) (string, []interface{})
 }
 
-func (r *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
+func (r *UserAdapter) Load(ctx context.Context, id string) (*model.User, error) {
 	query := `
 		select
 			id, 
@@ -53,7 +53,7 @@ func (r *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var user User
+		var user model.User
 		err = rows.Scan(
 			&user.Id,
 			&user.Username,
@@ -65,7 +65,7 @@ func (r *UserAdapter) Load(ctx context.Context, id string) (*User, error) {
 	return nil, nil
 }
 
-func (r *UserAdapter) Create(ctx context.Context, user *User) (int64, error) {
+func (r *UserAdapter) Create(ctx context.Context, user *model.User) (int64, error) {
 	query := `
 		insert into users (
 			id,
@@ -98,7 +98,7 @@ func (r *UserAdapter) Create(ctx context.Context, user *User) (int64, error) {
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Update(ctx context.Context, user *User) (int64, error) {
+func (r *UserAdapter) Update(ctx context.Context, user *model.User) (int64, error) {
 	query := `
 		update users 
 		set
@@ -146,8 +146,8 @@ func (r *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Search(ctx context.Context, filter *UserFilter) ([]User, int64, error) {
-	var users []User
+func (r *UserAdapter) Search(ctx context.Context, filter *filter.UserFilter) ([]model.User, int64, error) {
+	var users []model.User
 	if filter.Limit <= 0 {
 		return users, 0, nil
 	}
@@ -170,7 +170,7 @@ func (r *UserAdapter) Search(ctx context.Context, filter *UserFilter) ([]User, i
 	return users, total, err
 }
 
-func BuildQuery(filter *UserFilter) (string, []interface{}) {
+func BuildQuery(filter *filter.UserFilter) (string, []interface{}) {
 	query := "select * from users"
 	where, params := BuildFilter(filter)
 	if len(where) > 0 {
@@ -178,7 +178,7 @@ func BuildQuery(filter *UserFilter) (string, []interface{}) {
 	}
 	return query, params
 }
-func BuildFilter(filter *UserFilter) (string, []interface{}) {
+func BuildFilter(filter *filter.UserFilter) (string, []interface{}) {
 	buildParam := s.BuildDollarParam
 	var where []string
 	var params []interface{}
