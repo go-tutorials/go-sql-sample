@@ -21,7 +21,7 @@ type UserTransport interface {
 	Delete(w http.ResponseWriter, r *http.Request)
 }
 
-func NewUserHandler(ctx context.Context, db *sql.DB, logError func(context.Context, string, ...map[string]interface{})) (UserTransport,error) {
+func NewUserHandler(db *sql.DB, logError func(context.Context, string, ...map[string]interface{})) (UserTransport,error) {
 	validator, err := v.NewValidator()
 	if err != nil {
 		return nil, err
