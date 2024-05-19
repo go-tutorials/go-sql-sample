@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"go-service/internal/user/filter"
 	"go-service/internal/user/model"
 	"go-service/internal/user/repository"
 )
@@ -31,6 +30,6 @@ func (s *UserUseCase) Patch(ctx context.Context, user map[string]interface{}) (i
 func (s *UserUseCase) Delete(ctx context.Context, id string) (int64, error) {
 	return s.repository.Delete(ctx, id)
 }
-func (s *UserUseCase) Search(ctx context.Context, filter *filter.UserFilter) ([]model.User, int64, error) {
+func (s *UserUseCase) Search(ctx context.Context, filter *model.UserFilter) ([]model.User, int64, error) {
 	return s.repository.Search(ctx, filter)
 }

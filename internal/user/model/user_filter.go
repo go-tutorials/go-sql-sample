@@ -1,4 +1,4 @@
-package filter
+package model
 
 import "github.com/core-go/search"
 

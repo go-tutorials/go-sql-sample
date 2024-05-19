@@ -10,15 +10,14 @@ import (
 	"github.com/core-go/search/query"
 	s "github.com/core-go/sql"
 
-	"go-service/internal/user/filter"
 	"go-service/internal/user/model"
 )
 
-func NewUserAdapter(db *sql.DB, buildQuery func(*filter.UserFilter) (string, []interface{})) (*UserAdapter, error) {
+func NewUserAdapter(db *sql.DB, buildQuery func(*model.UserFilter) (string, []interface{})) (*UserAdapter, error) {
 	userType := reflect.TypeOf(model.User{})
 	if buildQuery == nil {
 		userQueryBuilder := query.NewBuilder(db, "users", userType)
-		buildQuery = func(filter *filter.UserFilter) (s string, i []interface{}) {
+		buildQuery = func(filter *model.UserFilter) (s string, i []interface{}) {
 			return userQueryBuilder.BuildQuery(filter)
 		}
 	}
@@ -35,7 +34,7 @@ type UserAdapter struct {
 	Keys          []string
 	JsonColumnMap map[string]string
 	BuildParam    func(int) string
-	BuildQuery    func(*filter.UserFilter) (string, []interface{})
+	BuildQuery    func(*model.UserFilter) (string, []interface{})
 }
 
 func (r *UserAdapter) Load(ctx context.Context, id string) (*model.User, error) {
@@ -146,7 +145,7 @@ func (r *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Search(ctx context.Context, filter *filter.UserFilter) ([]model.User, int64, error) {
+func (r *UserAdapter) Search(ctx context.Context, filter *model.UserFilter) ([]model.User, int64, error) {
 	var users []model.User
 	if filter.Limit <= 0 {
 		return users, 0, nil
@@ -170,7 +169,7 @@ func (r *UserAdapter) Search(ctx context.Context, filter *filter.UserFilter) ([]
 	return users, total, err
 }
 
-func BuildQuery(filter *filter.UserFilter) (string, []interface{}) {
+func BuildQuery(filter *model.UserFilter) (string, []interface{}) {
 	query := "select * from users"
 	where, params := BuildFilter(filter)
 	if len(where) > 0 {
@@ -178,7 +177,7 @@ func BuildQuery(filter *filter.UserFilter) (string, []interface{}) {
 	}
 	return query, params
 }
-func BuildFilter(filter *filter.UserFilter) (string, []interface{}) {
+func BuildFilter(filter *model.UserFilter) (string, []interface{}) {
 	buildParam := s.BuildDollarParam
 	var where []string
 	var params []interface{}

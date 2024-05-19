@@ -11,7 +11,6 @@ import (
 	s "github.com/core-go/search"
 	"github.com/gorilla/mux"
 
-	"go-service/internal/user/filter"
 	"go-service/internal/user/model"
 	"go-service/internal/user/service"
 )
@@ -21,7 +20,7 @@ const InternalServerError = "Internal Server Error"
 func NewUserHandler(service service.UserService, validate func(context.Context, interface{}) ([]core.ErrorMessage, error), logError func(context.Context, string, ...map[string]interface{})) *UserHandler {
 	userType := reflect.TypeOf(model.User{})
 	_, jsonMap, _ := core.BuildMapField(userType)
-	filterType := reflect.TypeOf(filter.UserFilter{})
+	filterType := reflect.TypeOf(model.UserFilter{})
 	paramIndex, filterIndex := s.BuildParams(filterType)
 	return &UserHandler{service: service, Validate: validate, jsonMap: jsonMap, LogError: logError, paramIndex: paramIndex, filterIndex: filterIndex}
 }
@@ -195,7 +194,7 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
-	filter := filter.UserFilter{Filter: &s.Filter{}}
+	filter := model.UserFilter{Filter: &s.Filter{}}
 	s.Decode(r, &filter, h.paramIndex, h.filterIndex)
 
 	var users []model.User
