@@ -6,9 +6,9 @@ import (
 	"github.com/core-go/core"
 	"github.com/core-go/core/header"
 	"github.com/core-go/core/random"
+	mid "github.com/core-go/log/middleware"
 	"github.com/core-go/log/strings"
 	"github.com/core-go/log/zap"
-	mid "github.com/core-go/middleware"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 
@@ -26,6 +26,7 @@ func main() {
 	log.Initialize(cfg.Log)
 	r.Use(mid.BuildContext)
 	logger := mid.NewMaskLogger(Mask, Mask)
+	// logger := mid.NewLogger()
 	if log.IsInfoEnable() {
 		r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
 	}
@@ -47,7 +48,7 @@ func main() {
 func GenerateId() string {
 	return random.Random(16)
 }
-func Mask(obj map[string]interface{}){
+func Mask(obj map[string]interface{}) {
 	v, ok := obj["phone"]
 	if ok {
 		s, ok2 := v.(string)

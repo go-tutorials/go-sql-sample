@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/core-go/core"
 	"github.com/core-go/core/header"
+	mid "github.com/core-go/log/middleware"
 	"github.com/core-go/log/zap"
-	mid "github.com/core-go/middleware"
 	"github.com/core-go/sql"
 
 	"go-service/pkg/client"
