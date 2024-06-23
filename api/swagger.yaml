@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Swagger Petstore - OpenAPI 3.0
+  title: Swagger Sample - OpenAPI 3.0
   description: |-
     This is a sample User Server based on the OpenAPI 3.0 specification.  You can find out more about
     Swagger at [https://swagger.io](https://swagger.io).
@@ -44,11 +44,7 @@ paths:
         '400':
           description: Invalid user supplied
         '409':
-          description: Duplicate user Id. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Duplicate user Id
         '422':
           description: Validation errors
           content:
@@ -70,6 +66,7 @@ paths:
         - name: userId
           in: path
           description: 'The userId that needs to be fetched. Use spiderman for testing. '
+          example: wolverine
           required: true
           schema:
             type: string
@@ -96,6 +93,7 @@ paths:
         - name: userId
           in: path
           description: user that need to be updated
+          example: wolverine
           required: true
           schema:
             type: string
@@ -115,17 +113,9 @@ paths:
         '400':
           description: Invalid user supplied
         '404':
-          description: User not found. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: User not found
         '409':
-          description: Conflict between multiple simultaneous updates. Return -1
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Conflict between multiple simultaneous updates
         '422':
           description: Validation errors
           content:
@@ -146,6 +136,7 @@ paths:
         - name: userId
           in: path
           description: user that need to be update partially
+          example: wolverine
           required: true
           schema:
             type: string
@@ -165,17 +156,9 @@ paths:
         '400':
           description: Invalid user supplied
         '404':
-          description: User not found. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: User not found
         '409':
-          description: Conflict between multiple simultaneous updates. Return -1
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: Conflict between multiple simultaneous updates
         '422':
           description: Validation errors
           content:
@@ -196,6 +179,7 @@ paths:
         - name: userId
           in: path
           description: The userId that needs to be deleted
+          example: wolverine
           required: true
           schema:
             type: string
@@ -209,11 +193,7 @@ paths:
         '400':
           description: Invalid userId supplied
         '404':
-          description: User not found. Return 0
-          content:
-            application/json:
-              schema:
-                type: integer
+          description: User not found
         '500':
           description: Internal Server Error
   /users/search:
