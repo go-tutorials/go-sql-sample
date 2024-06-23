@@ -34,6 +34,15 @@ type UserHandler struct {
 	filterIndex int
 }
 
+func (h *UserHandler) All(w http.ResponseWriter, r *http.Request) {
+	users, err := h.service.All(r.Context())
+	if err != nil {
+		h.LogError(r.Context(), fmt.Sprintf("Error: %s", err.Error()))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	JSON(w, http.StatusOK, users)
+}
 func (h *UserHandler) Load(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	if len(id) == 0 {
@@ -197,8 +206,8 @@ func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
 	filter := model.UserFilter{Filter: &s.Filter{}}
 	s.Decode(r, &filter, h.paramIndex, h.filterIndex)
 
-	var users []model.User
-	users, total, err := h.service.Search(r.Context(), &filter)
+	offset := s.GetOffset(filter.Limit, filter.Page)
+	users, total, err := h.service.Search(r.Context(), &filter, filter.Limit, offset)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

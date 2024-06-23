@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/core-go/search/query"
 	s "github.com/core-go/sql"
 
 	"go-service/internal/user/model"
@@ -15,13 +14,7 @@ import (
 
 func NewUserAdapter(db *sql.DB, buildQuery func(*model.UserFilter) (string, []interface{})) (*UserAdapter, error) {
 	userType := reflect.TypeOf(model.User{})
-	if buildQuery == nil {
-		userQueryBuilder := query.NewBuilder(db, "users", userType)
-		buildQuery = func(filter *model.UserFilter) (s string, i []interface{}) {
-			return userQueryBuilder.BuildQuery(filter)
-		}
-	}
-	fieldsIndex, _, jsonColumnMap, keys, _, _, buildParam, _,  err := s.Init(userType, db)
+	fieldsIndex, _, jsonColumnMap, keys, _, _, buildParam, _, err := s.Init(userType, db)
 	if err != nil {
 		return nil, err
 	}
@@ -37,6 +30,36 @@ type UserAdapter struct {
 	BuildQuery    func(*model.UserFilter) (string, []interface{})
 }
 
+func (r *UserAdapter) All(ctx context.Context) ([]model.User, error) {
+	query := `
+		select
+			id, 
+			username,
+			email,
+			phone,
+			date_of_birth
+		from users`
+	rows, err := r.DB.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var users []model.User
+	for rows.Next() {
+		var user model.User
+		err = rows.Scan(
+			&user.Id,
+			&user.Username,
+			&user.Email,
+			&user.Phone,
+			&user.DateOfBirth)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
 func (r *UserAdapter) Load(ctx context.Context, id string) (*model.User, error) {
 	query := `
 		select
@@ -145,13 +168,12 @@ func (r *UserAdapter) Delete(ctx context.Context, id string) (int64, error) {
 	return res.RowsAffected()
 }
 
-func (r *UserAdapter) Search(ctx context.Context, filter *model.UserFilter) ([]model.User, int64, error) {
+func (r *UserAdapter) Search(ctx context.Context, filter *model.UserFilter, limit int64, offset int64) ([]model.User, int64, error) {
 	var users []model.User
 	if filter.Limit <= 0 {
 		return users, 0, nil
 	}
 	query, params := r.BuildQuery(filter)
-	offset := s.GetOffset(filter.Limit, filter.Page)
 	pagingQuery := s.BuildPagingQuery(query, filter.Limit, offset)
 	countQuery := s.BuildCountQuery(query)
 
