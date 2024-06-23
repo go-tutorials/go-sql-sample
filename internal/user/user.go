@@ -9,7 +9,6 @@ import (
 
 	"go-service/internal/user/handler"
 	"go-service/internal/user/repository/adapter"
-	"go-service/internal/user/repository/query"
 	"go-service/internal/user/service"
 )
 
@@ -29,7 +28,7 @@ func NewUserHandler(db *sql.DB, logError func(context.Context, string, ...map[st
 		return nil, err
 	}
 
-	userRepository, err := adapter.NewUserAdapter(db, query.BuildQuery)
+	userRepository, err := adapter.NewUserAdapter(db, adapter.BuildQuery)
 	if err != nil {
 		return nil, err
 	}

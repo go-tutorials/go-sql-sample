@@ -86,10 +86,10 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	if res < 1 {
-		JSON(w, http.StatusConflict, res)
-	} else {
+	if res > 0 {
 		JSON(w, http.StatusCreated, user)
+	} else {
+		JSON(w, http.StatusConflict, res)
 	}
 }
 func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
@@ -127,12 +127,12 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, er3.Error(), http.StatusInternalServerError)
 		return
 	}
-	if res < 1 {
-		JSON(w, http.StatusConflict, res)
+	if res > 0 {
+		JSON(w, http.StatusOK, user)
 	} else if res == 0 {
 		JSON(w, http.StatusNotFound, res)
 	} else {
-		JSON(w, http.StatusOK, user)
+		JSON(w, http.StatusConflict, res)
 	}
 }
 func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
@@ -176,12 +176,12 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
-	if res < 1 {
-		JSON(w, http.StatusConflict, res)
+	if res > 0 {
+		JSON(w, http.StatusOK, json)
 	} else if res == 0 {
 		JSON(w, http.StatusNotFound, res)
 	} else {
-		JSON(w, http.StatusOK, user)
+		JSON(w, http.StatusConflict, res)
 	}
 }
 func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
@@ -196,10 +196,10 @@ func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if res < 1 {
-		JSON(w, http.StatusNotFound, res)
-	} else {
+	if res > 0 {
 		JSON(w, http.StatusOK, res)
+	} else {
+		JSON(w, http.StatusNotFound, res)
 	}
 }
 func (h *UserHandler) Search(w http.ResponseWriter, r *http.Request) {
