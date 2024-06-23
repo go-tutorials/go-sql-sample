@@ -4,7 +4,7 @@ server:
 
 sql:
   driver: postgres
-  data_source_name: postgres://xkjofgbu:MKmT3B0PPIZ6pr057wEHFUMvtad5nXex@satao.db.elephantsql.com/xkjofgbu
+  data_source_name: postgres://postgres:abcd1234@localhost/masterdata?sslmode=disable
 
 log:
   level: info
@@ -18,6 +18,10 @@ middleware:
   request: request
   response: response
   size: size
+
+response:
+  id: X-Response-Id
+  correlation: X-Correlation-Id
 
 client:
   endpoint:
