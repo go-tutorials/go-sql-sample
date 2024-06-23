@@ -22,14 +22,3 @@ middleware:
 response:
   id: X-Response-Id
   correlation: X-Correlation-Id
-
-client:
-  endpoint:
-    url: "http://localhost:8080/users"
-    timeout: 1s
-  log:
-    log: true
-    size: size
-    status: status
-    request: request
-    response: response
