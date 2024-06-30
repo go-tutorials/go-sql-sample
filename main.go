@@ -25,7 +25,7 @@ func main() {
 
 	log.Initialize(cfg.Log)
 	r.Use(mid.BuildContext)
-	logger := mid.NewMaskLogger(Mask, Mask)
+	logger := mid.NewMaskLogger(cfg.MiddleWare.Request, Mask, Mask)
 	// logger := mid.NewLogger()
 	if log.IsInfoEnable() {
 		r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
