@@ -154,7 +154,7 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Id not match", http.StatusBadRequest)
 		return
 	}
-	json, er2 := core.BodyToJsonMap(r, user, body, []string{"id"}, h.jsonMap)
+	jsonUser, er2 := core.BodyToJsonMap(r, user, body, []string{"id"}, h.jsonMap)
 	if er2 != nil {
 		http.Error(w, er2.Error(), http.StatusInternalServerError)
 		return
@@ -170,14 +170,14 @@ func (h *UserHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		JSON(w, http.StatusUnprocessableEntity, errors)
 		return
 	}
-	res, er4 := h.service.Patch(r.Context(), json)
+	res, er4 := h.service.Patch(r.Context(), jsonUser)
 	if er4 != nil {
 		h.LogError(r.Context(), er4.Error(), MakeMap(user))
 		http.Error(w, InternalServerError, http.StatusInternalServerError)
 		return
 	}
 	if res > 0 {
-		JSON(w, http.StatusOK, json)
+		JSON(w, http.StatusOK, jsonUser)
 	} else if res == 0 {
 		JSON(w, http.StatusNotFound, res)
 	} else {
