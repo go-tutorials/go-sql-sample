@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"github.com/core-go/config"
-	"github.com/core-go/core"
 	"github.com/core-go/core/header"
 	"github.com/core-go/core/random"
+	srv "github.com/core-go/core/server"
 	mid "github.com/core-go/log/middleware"
 	"github.com/core-go/log/strings"
 	"github.com/core-go/log/zap"
@@ -39,8 +39,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	log.Info(ctx, core.ServerInfo(cfg.Server))
-	server := core.CreateServer(cfg.Server, r)
+	log.Info(ctx, srv.ServerInfo(cfg.Server))
+	server := srv.CreateServer(cfg.Server, r)
 	if err = server.ListenAndServe(); err != nil {
 		log.Error(ctx, err.Error())
 	}

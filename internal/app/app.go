@@ -6,6 +6,7 @@ import (
 	"github.com/core-go/health"
 	"github.com/core-go/log/zap"
 	q "github.com/core-go/sql"
+	h "github.com/core-go/sql/health"
 
 	"go-service/internal/user"
 )
@@ -27,7 +28,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		return nil, err
 	}
 
-	sqlChecker := q.NewHealthChecker(db)
+	sqlChecker := h.NewHealthChecker(db)
 	healthHandler := health.NewHandler(sqlChecker)
 
 	return &ApplicationContext{
