@@ -8,7 +8,7 @@ require (
 	github.com/core-go/health v1.0.1
 	github.com/core-go/log v1.0.5
 	github.com/core-go/search v1.0.7
-	github.com/core-go/sql v0.5.17
+	github.com/core-go/sql v0.5.18
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 )
