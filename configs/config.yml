@@ -1,5 +1,5 @@
 server:
-  name: go-sql-layer-architecture-sample
+  name: go-sql-sample
   port: 8080
 
 sql:
