@@ -7,10 +7,11 @@ go run main.go
 
 ## Architecture
 ### Simple Layer Architecture
-![Layer Architecture](https://camo.githubusercontent.com/d9b21eb50ef70dcaebf5a874559608f475e22c799bc66fcf99fb01f08576540f/68747470733a2f2f63646e2d696d616765732d312e6d656469756d2e636f6d2f6d61782f3830302f312a4a4459546c4b3030796730496c556a5a392d737037512e706e67)
+![Layer Architecture](https://cdn-images-1.medium.com/max/800/1*JDYTlK00yg0IlUjZ9-sp7Q.png)
 
 ### Layer Architecture with full features
-![Layer Architecture with standard features: config, health check, logging, middleware log tracing](https://camo.githubusercontent.com/aa7b739a4692eaf2b363cf9caf8b021c60082c77c98d3f8c96665b5cf4640628/68747470733a2f2f63646e2d696d616765732d312e6d656469756d2e636f6d2f6d61782f3830302f312a6d79556b504969343265593477455f494446526176412e706e67)
+![Layer Architecture with standard features: config, health check, logging, middleware log tracing](https://cdn-images-1.medium.com/max/800/1*8UjJSv_tW0xBKFXKZu86MA.png)
+
 #### [core-go/search](https://github.com/core-go/search)
 - Build the search model at http handler
 - Build dynamic SQL for search
