@@ -6,9 +6,9 @@ require (
 	github.com/core-go/config v1.0.1
 	github.com/core-go/core v0.6.10
 	github.com/core-go/health v1.0.1
-	github.com/core-go/log v1.0.5
+	github.com/core-go/log v1.0.7
 	github.com/core-go/search v1.0.7
-	github.com/core-go/sql v0.5.18
+	github.com/core-go/sql v0.6.1
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
 )
@@ -34,9 +34,9 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
-	golang.org/x/net v0.27.0 // indirect
+	golang.org/x/crypto v0.23.0 // indirect
+	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8 // indirect
+	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

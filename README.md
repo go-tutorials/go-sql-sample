@@ -287,21 +287,21 @@ func main() {
 import (
     "github.com/core-go/config"
     "github.com/core-go/log"
-    m "github.com/core-go/middleware"
+    mid "github.com/core-go/middleware"
     "github.com/gorilla/mux"
 )
 
 func main() {
-    var conf app.Root
-    config.Load(&conf, "configs/config")
+    var cfg app.Root
+    config.Load(&cfg, "configs/config")
 
     r := mux.NewRouter()
 
-    log.Initialize(conf.Log)
-    r.Use(m.BuildContext)
-    logger := m.NewStructuredLogger()
-    r.Use(m.Logger(conf.MiddleWare, log.InfoFields, logger))
-    r.Use(m.Recover(log.ErrorMsg))
+    log.Initialize(cfg.Log)
+    r.Use(mid.BuildContext)
+    logger := mid.NewLogger()
+    r.Use(mid.Logger(cfg.MiddleWare, log.InfoFields, logger))
+    r.Use(mid.Recover(log.ErrorMsg))
 }
 ```
 To configure to ignore the health check, use "skips":

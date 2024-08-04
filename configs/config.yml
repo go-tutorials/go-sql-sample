@@ -17,6 +17,8 @@ log:
 
 middleware:
   log: true
+  separate: true
+  string_format: true
   skips: /health
   request: request
   response: response
