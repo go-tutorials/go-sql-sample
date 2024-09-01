@@ -11,7 +11,6 @@ log:
   map:
     time: "@timestamp"
     msg: message
-    stacktrace: stacktrace
     caller: caller
     function: func
 
