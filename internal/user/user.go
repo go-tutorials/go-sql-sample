@@ -33,6 +33,6 @@ func NewUserHandler(db *sql.DB, logError func(context.Context, string, ...map[st
 		return nil, err
 	}
 	userService := service.NewUserService(userRepository)
-	userHandler := handler.NewUserHandler(userService, validator.Validate, logError)
+	userHandler := handler.NewUserHandler(userService, logError, validator.Validate)
 	return userHandler, nil
 }
